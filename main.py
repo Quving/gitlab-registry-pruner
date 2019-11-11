@@ -3,7 +3,7 @@ import logging
 import time
 
 import services
-from config import TAGS_TO_PRUNE_WITH_PREFIX, TAGS_TO_KEEP, KEEP_LAST_N_TAGS
+from config import DELETE_TAGS_WITH_PREFIX, TAGS_TO_KEEP, KEEP_N_LATEST_TAGS
 
 # Configure Logger
 from services import generate_report
@@ -19,9 +19,12 @@ logger.addHandler(ch)
 def prune(dry_run=False):
     logger.info("Fetch projects. Please wait...")
     projects = services.get_projects_to_be_pruned()
+
+    # # Cache results in local file for development.
     # with open("projects.json", "w") as file:
     #     json.dump(projects, file, indent=True)
-
+    #
+    # # Use file from cache for development.
     # with open("projects.json", "r") as file:
     #     projects = json.load(file)
 
@@ -33,7 +36,7 @@ def prune(dry_run=False):
         all_tags[p['project_name']] = p['repository_tags']
         tags_to_keep_in_project = []
         # Prune for each tag prefix seperately.
-        for tag_prefix in TAGS_TO_PRUNE_WITH_PREFIX:
+        for tag_prefix in DELETE_TAGS_WITH_PREFIX:
             # Get all tags with the prefix.
             tags_with_prefix = [t for t in p['repository_tags'] if t['name'].startswith(tag_prefix)]
 
@@ -42,7 +45,7 @@ def prune(dry_run=False):
                 tags_with_prefix,
                 key=lambda i: i['created_at'],
                 reverse=True
-            )[:KEEP_LAST_N_TAGS]
+            )[:KEEP_N_LATEST_TAGS]
             tags_to_keep_in_project += tags_with_prefix_to_keep
 
         # Add the whitelisted tags to the tags that is to be kept.
@@ -63,7 +66,7 @@ def prune(dry_run=False):
         print(k.upper())
         for tag in v:
             if dry_run:
-                time.sleep(0.5)
+                time.sleep(0.1)
             else:
                 services.delete_repository(project_id=v['project_id'], repository_id=v['repository_id'], tag_name=tag)
             print("\t{} ... deleted".format(tag['path']))
