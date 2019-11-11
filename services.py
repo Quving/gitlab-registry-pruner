@@ -1,4 +1,5 @@
 import requests
+from pip._vendor.pyparsing import Dict
 from tqdm import tqdm
 
 from config import GITLAB_GROUP_ID, GITLAB_PRIVATE_TOKEN, GITLAB_API_BASE_URL
@@ -139,3 +140,25 @@ def delete_repository(project_id, repository_id, tag_name):
     )
     response = requests.delete(url=url, headers=headers, params=params)
     return response.json()
+
+
+def generate_report(tags_to_keep: Dict, tags_to_delete: Dict, all_tags: Dict):
+    """
+    Prints the log to console.
+    :param tags_to_keep:
+    :param tags_to_delete:
+    :param all_tags:
+    :return:
+    """
+    for k, v in all_tags.items():
+        print("\n", k.upper())
+        for t in v:
+            if t in tags_to_keep[k]:
+                print("  - [+]\t{}\t{}".format(t['path'].ljust(25), t['created_at']))
+            else:
+                print("  - [-]\t{}\t{}".format(t['path'].ljust(25), t['created_at']))
+
+    print("\n-------------------------------------------------------------------------\n")
+    print(" SUMMARY\n")
+    print(' {} repository tags kept.'.format((sum([len(tags_to_keep[k]) for k in tags_to_keep]))))
+    print(' {} repository tags deleted.'.format((sum([len(tags_to_delete[k]) for k in tags_to_delete]))))
