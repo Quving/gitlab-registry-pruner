@@ -1,0 +1,32 @@
+---
+kind: pipeline
+type: docker
+name: pipeline
+
+steps:
+- name: publish latest
+  image: plugins/docker
+  settings:
+    repo: pingu/gitlab-registry-pruner
+    tags: latest
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    status: [ success ]
+    branch: [ master ]
+
+- name: publish tagged docker-image
+  image: plugins/docker
+  settings:
+    repo: pingu/gitlab-registry-pruner
+    tags: ${DRONE_TAG}
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+  when:
+    status: [ success ]
+    event:
+      - tag
