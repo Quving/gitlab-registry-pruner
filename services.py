@@ -1,8 +1,12 @@
+import datetime
+import os
+import sys
+
 import requests
 from pip._vendor.pyparsing import Dict
 from tqdm import tqdm
 
-from config import GITLAB_GROUP_ID, GITLAB_PRIVATE_TOKEN, GITLAB_API_BASE_URL
+from config import GITLAB_GROUP_ID, GITLAB_PRIVATE_TOKEN, GITLAB_API_BASE_URL, LOG_DIR
 
 
 def get_gitlab_projects(group_id):
@@ -150,13 +154,20 @@ def generate_report(tags_to_keep: Dict, tags_to_delete: Dict, all_tags: Dict):
     :param all_tags:
     :return:
     """
+
+    # Create logfile
+    log_file_name = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
+    sys.stdout = open(os.path.join(LOG_DIR, log_file_name), 'w')
+
     for k, v in all_tags.items():
         print("\n", k.upper())
         for t in v:
             if t in tags_to_keep[k]:
-                print("  - [+]\t{}\t{}".format(t['path'].ljust(25), t['created_at']))
+                action = '[KEPT]'
             else:
-                print("  - [-]\t{}\t{}".format(t['path'].ljust(25), t['created_at']))
+                action = '[DELETED]'
+
+            print("  - {}\t{}\t{}".format(action.ljust(9), t['path'].ljust(25), t['created_at']))
 
     print("\n-------------------------------------------------------------------------\n")
     print(" SUMMARY\n")
