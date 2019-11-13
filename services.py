@@ -161,4 +161,4 @@ def generate_report(tags_to_keep: Dict, tags_to_delete: Dict, all_tags: Dict):
     print("\n-------------------------------------------------------------------------\n")
     print(" SUMMARY\n")
     print(' {} repository tags kept.'.format((sum([len(tags_to_keep[k]) for k in tags_to_keep]))))
-    print(' {} repository tags deleted.'.format((sum([len(tags_to_delete[k]) for k in tags_to_delete]))))
+    print(' {} repository tags deleted.\n'.format((sum([len(tags_to_delete[k]) for k in tags_to_delete]))))
