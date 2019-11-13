@@ -3,7 +3,7 @@ import logging
 import time
 
 import services
-from config import DELETE_TAGS_WITH_PREFIX, TAGS_TO_KEEP, KEEP_N_LATEST_TAGS
+from config import DELETE_TAGS_WITH_PREFIX, TAGS_TO_KEEP, KEEP_N_LATEST_TAGS, DRY_RUN
 
 # Configure Logger
 from services import generate_report
@@ -68,7 +68,7 @@ def prune(dry_run=False):
             if dry_run:
                 time.sleep(0.1)
             else:
-                services.delete_repository(project_id=v['project_id'], repository_id=v['repository_id'], tag_name=tag)
+                services.delete_repository(project_id=v['project_id'], repository_id=v['repository_id'], tag_name=tag['name'])
             print("\t{} ... deleted".format(tag['path']))
 
     logger.info("Generate summary.")
@@ -76,4 +76,4 @@ def prune(dry_run=False):
 
 
 if __name__ == '__main__':
-    prune(dry_run=True)
+    prune(dry_run=DRY_RUN)
