@@ -15,6 +15,7 @@ Contains scripts to keep your Gitlab-Registry clean.
 |DELETE_TAGS_WITH_PREFIX|A comma seperated string of string prefixes that should be removed. For example setting 'v' would have the effect that tags such as v0.1.4, v0.2.4 and version will be deleted. In general v*.|'v,test_'|:heavy_check_mark:|
 |KEEP_N_LATEST_TAGS|A number of latest tags (specified  by 'DELETE_TAGS_WITH_PREFIX') that should be kept.| 5 |:heavy_check_mark:
 |DRY_RUN| Execute script with dry-run option. Set '1' for dry-run. Else '0'. For safety it's set on '1' as default.| 1 |:heavy_check_mark:
+|LOG_DIR| The directory where the logs will be put. If the directory does not exist, it will be created.| 'logs' |:heavy_check_mark:
 
 
 ## Usage
@@ -27,6 +28,7 @@ docker run --rm -it \
     -e TAGS_TO_KEEP='...' \
     -e DELETE_TAGS_WITH_PREFIX='...' \
     -e KEEP_N_LATEST_TAGS='...' \
+    -e DRY_RUN='...' \
     pingu/gitlab-registry-pruner
 ```
 ### Using python
