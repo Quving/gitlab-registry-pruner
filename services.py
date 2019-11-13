@@ -146,12 +146,12 @@ def delete_repository(project_id, repository_id, tag_name):
     return response.json()
 
 
-def generate_report(tags_to_keep: Dict, tags_to_delete: Dict, all_tags: Dict):
+def generate_report(keep: Dict, delete: Dict, all: Dict):
     """
     Prints the log to console.
-    :param tags_to_keep:
-    :param tags_to_delete:
-    :param all_tags:
+    :param keep:
+    :param delete:
+    :param all:
     :return:
     """
 
@@ -159,17 +159,21 @@ def generate_report(tags_to_keep: Dict, tags_to_delete: Dict, all_tags: Dict):
     log_file_name = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.log'
     sys.stdout = open(os.path.join(LOG_DIR, log_file_name), 'w')
 
-    for k, v in all_tags.items():
+    for k, v in all.items():
         print("\n", k.upper())
-        for t in v:
-            if t in tags_to_keep[k]:
+        for t in v['repository_tags']:
+            if t in keep[k]['repository_tags']:
                 action = '[KEPT]'
             else:
                 action = '[DELETED]'
 
-            print("  - {}\t{}\t{}".format(action.ljust(9), t['path'].ljust(25), t['created_at']))
+            print("  - {}\t{}\t{}".format(action.ljust(9), t['path'].ljust(35), t['created_at']))
 
     print("\n-------------------------------------------------------------------------\n")
     print(" SUMMARY\n")
-    print(' {} repository tags kept.'.format((sum([len(tags_to_keep[k]) for k in tags_to_keep]))))
-    print(' {} repository tags deleted.\n'.format((sum([len(tags_to_delete[k]) for k in tags_to_delete]))))
+
+    n_tags_kept = sum([len(v['repository_tags']) for v in keep.values()])
+    n_tags_deleted = sum([len(v['repository_tags']) for v in delete.values()])
+
+    print(' {} repository tags kept.'.format(n_tags_kept))
+    print(' {} repository tags deleted.\n'.format(n_tags_deleted))
