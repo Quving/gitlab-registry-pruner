@@ -1,6 +1,8 @@
 import os
 
-DRY_RUN = True
+DRY_RUN = os.getenv("DRY_RUN", '1')
+LOG_DIR = 'logs'
+
 GITLAB_GROUP_ID = os.getenv("GITLAB_GROUP_ID")
 GITLAB_PRIVATE_TOKEN = os.getenv("GITLAB_PRIVATE_TOKEN")
 GITLAB_API_BASE_URL = "{}/api/v4".format(os.getenv("GITLAB_SERVER"))
