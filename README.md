@@ -14,6 +14,8 @@ Contains scripts to keep your Gitlab-Registry clean.
 |TAGS_TO_KEEP|A comma seperated string of tags what want to be kept.|'latest,stable,develop'|:heavy_check_mark:|
 |DELETE_TAGS_WITH_PREFIX|A comma seperated string of string prefixes that should be removed. For example setting 'v' would have the effect that tags such as v0.1.4, v0.2.4 and version will be deleted. In general v*.|'v,test_'|:heavy_check_mark:|
 |KEEP_N_LATEST_TAGS|A number of latest tags (specified  by 'DELETE_TAGS_WITH_PREFIX') that should be kept.| 5 |:heavy_check_mark:
+|DRY_RUN| Execute script with dry-run option. Set '1' for dry-run. Else '0'. For safety it's set on '1' as default.| 1 |:heavy_check_mark:
+
 
 ## Usage
 ### Using Docker
